@@ -73,7 +73,9 @@ function Get-DownloadQueue {
                 Write-Host "Jeff Error limit has been hit." -ForegroundColor Red
                 $JeffErrorLimitHit.Value = $true
             }
-        } elseif ($JeffErrorLimitHit.Value -and ((Get-Item -LiteralPath $VideoPath).LastWriteTime -eq $JeffErrorDateModified)) {
+        } elseif ($JeffErrorLimitHit.Value `
+        -and (Test-Path -LiteralPath $VideoPath -PathType Leaf) `
+        -and ((Get-Item -LiteralPath $VideoPath).LastWriteTime -eq $JeffErrorDateModified)) {
             Write-Host "Jeff Error limit was hit; skipping timestamp fix for dummy of '$($Response.name)'." -ForegroundColor Red
         }
 

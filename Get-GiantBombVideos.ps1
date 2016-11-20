@@ -51,6 +51,7 @@ $Videos += Get-VideosFromGame "http://www.giantbomb.com/mercs-inc/3030-29285/"
 # $Videos += Get-VideosFromGame "http://www.giantbomb.com/the-witcher-3-wild-hunt/3030-41484/"
 # $Videos += Get-VideosFromGame "http://www.giantbomb.com/hitman/3030-45150/"
 # $Videos += Get-VideosFromGame "http://www.giantbomb.com/gears-of-war-4/3030-45269/"
+$Videos += Get-VideosFromGame "http://www.giantbomb.com/mass-effect-andromeda/3030-46631/"
 # $Videos += Get-VideosFromGame "http://www.giantbomb.com/rise-of-the-tomb-raider/3030-46549/"
 # $Videos += Get-VideosFromGame "http://www.giantbomb.com/rock-band-4/3030-49077/"
 # $Videos += Get-VideosFromGame "http://www.giantbomb.com/titanfall-2/3030-49139/"
@@ -85,10 +86,10 @@ id name
 #>
 
 # $Videos += Get-VideosFromCategory 7
-$Videos += Get-VideosFromCategory 17
-$Videos += Get-VideosFromCategory 19
+# $Videos += Get-VideosFromCategory 17
+# $Videos += Get-VideosFromCategory 19
 $Videos += Get-VideosFromCategory 20
-$Videos += Get-VideosFromCategory 22
+# $Videos += Get-VideosFromCategory 22
 
 $Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
 
