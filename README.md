@@ -48,6 +48,14 @@ Part of what I want to get out of this project, and most especially from sharing
 - Keeps a running count of bytes downloaded
 - Handles pagination accordingly, as some API result sets span multiple pages
 
+## API authentication
+
+The script will give you a somewhat reasonable error if you don't do this, but I'm adding it here anyway.
+
+There is a JSON file name `GiantBombApiKey.example.json` that needs to be duplicated and renamed to `GiantBombApiKey.json` with a valid key edited into it.
+
+This file is of course in .gitignore already, so don't worry about checking it in accidentially.
+
 ## TODO list
 
 - Put in parameter handling for the video search scope, instead of editing the script file directly.
