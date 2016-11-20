@@ -85,12 +85,12 @@ id name
 #>
 
 # $Videos += Get-VideosFromCategory 7
-# $Videos += Get-VideosFromCategory 17
-# $Videos += Get-VideosFromCategory 19
-# $Videos += Get-VideosFromCategory 20
-# $Videos += Get-VideosFromCategory 22
+$Videos += Get-VideosFromCategory 17
+$Videos += Get-VideosFromCategory 19
+$Videos += Get-VideosFromCategory 20
+$Videos += Get-VideosFromCategory 22
 
-# $Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
+$Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
 
 # $Videos
 # $Videos | Format-Table | Write-Host
@@ -109,13 +109,13 @@ foreach ($Video in ($Videos | Sort-Object | Get-Unique)) {
     $ConvertedVideos += Convert-VideoUrlForApi $Video
 }
 
+# Sort the videos by their unique IDs in the tail end of the URL
 $ConvertedVideos = $ConvertedVideos | Sort-Object { [long]($_.Substring($_.IndexOf("-") + 1, $_.Substring($_.IndexOf("-") + 1).Length - 1)) }
 $TotalSize = 0
 
 # $ConvertedVideos | Format-Table | Write-Host
 
-Write-Host "$($ConvertedVideos.Count) video(s) queued."
-Write-Host
+Write-Host "$($ConvertedVideos.Count) video(s) queued.`n"
 
 $JeffErrorLimitHit = $false
 $DownloadQueue += Get-DownloadQueue $ConvertedVideos ([ref]$JeffErrorLimitHit)
@@ -130,7 +130,7 @@ if ($DownloadQueue.Count -gt 0) {
 
     foreach ($Download in $DownloadQueue) {
         if ($JeffErrorLimitHit) {
-            Write-Host "Jeff Error limit was hit; skipping download of '$($Download.name)'.`n" -ForegroundColor Red
+            Write-Host "Jeff Error limit was hit; skipping download of '$($Download.type) > $($Download.name)'.`n" -ForegroundColor Red
 
             continue
         }

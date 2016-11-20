@@ -8,13 +8,16 @@ For real though, I wrote something very similar to this years ago in [bash][bash
 
 This script does the following:
 
-1. Interrogates the [Giant Bomb API][gbapi] which can be done in a few different ways:
-    1. Choosing a video category.
-    1. Supplying an RSS feed URL.
-    1. Supplying a URL for a game page on the GB wiki.
-    1. Search using keyword(s).
-    1. Suppyling a URL for a single video.
-1. Builds up a list of videos in the specified scope.
+1. Interrogates the [Giant Bomb API][gbapi] via a few different methods:
+    - Choosing a video category ([by ID, for the moment](#catById)).
+    - Supplying an [RSS feed URL][gbrss]:
+        - Note that not all feed types have been tested or even attempted yet.
+        - I have only been using `http://www.giantbomb.com/feeds/video/`.
+    - Supplying a URL for [a game page on the GB wiki][gbgames].
+    - Search using keyword(s).
+    - Suppyling a URL for a single video:
+        - e.g. `http://www.giantbomb.com/videos/quick-look-watch-dogs-2/2300-11716/`
+1. Builds up a list of videos in the specified scope(s).
 1. Steps through the list confirming whether or not the user wants to download each video found.
 1. Gets the HD version of the video(s) that the user wants.
 
@@ -25,13 +28,13 @@ Part of what I want to get out of this project, and most especially from sharing
 ### TODO list
 
 - Put in parameter handling for the video search scope, instead of editing the script file directly.
-- Do a menu to choose categories from, rather than having to specify the ID number(s).
+- Do a menu to choose categories from, rather than having to specify the ID number(s).<a name="catById"></a>
 - Paginate for all lookup types; currently only doing it for `Search-Api` and `Get-VideosFromCategory`.
 - Needs to handle the following:
     - Empty URLs from the API e.g. the botched Gears 4 QL:
-        - http://www.giantbomb.com/videos/quick-look-gears-of-war-4/2300-11632/
+        - `http://www.giantbomb.com/videos/quick-look-gears-of-war-4/2300-11632/`
     - Filenames with square brackets:
-        - http://www.giantbomb.com/videos/the-witcher-3-blood-and-vino/2300-11206/
+        - `http://www.giantbomb.com/videos/the-witcher-3-blood-and-vino/2300-11206/`
 - Show estimates for download times:
     - Might not be possible with the BITS command currently in use.
     - Maybe just calculate these based on 5/10/15 Mbps to give a broad sense of timing.
@@ -82,3 +85,5 @@ Part of what I want to get out of this project, and most especially from sharing
 [gb]: http://www.giantbomb.com
 [bash]: https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
 [gbapi]: http://www.giantbomb.com/api/
+[gbrss]: http://www.giantbomb.com/feeds/
+[gbgames]: http://www.giantbomb.com/games/
