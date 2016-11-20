@@ -88,10 +88,10 @@ id name
 # $Videos += Get-VideosFromCategory 7
 # $Videos += Get-VideosFromCategory 17
 # $Videos += Get-VideosFromCategory 19
-$Videos += Get-VideosFromCategory 20
+# $Videos += Get-VideosFromCategory 20
 # $Videos += Get-VideosFromCategory 22
 
-$Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
+# $Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
 
 # $Videos
 # $Videos | Format-Table | Write-Host

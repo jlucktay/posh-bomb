@@ -26,7 +26,7 @@ Part of what I want to get out of this project, and most especially from sharing
 
 ## Current features and functionality
 
-- Download HD videos from Giant Bomb, based on any of the following inputs
+- Downloads HD videos from Giant Bomb, based on any of the following inputs
     - Search term
     - Game name/link
     - Specific video page link
@@ -65,6 +65,8 @@ Part of what I want to get out of this project, and most especially from sharing
     - I know I lean on it a lot when I'm developing this monstrosity.
     - The script basically won't work if you don't have a local copy, since it references the size and timestamp properties on the file.
 - Show the overall time taken to download.
+- Put a wrapper around Invoke-WebRequest to combine the 1 second sleep into one call, rather than having to remember to add the sleep line every time.
+- Write some Pester tests to cover this whole mess.
 
 [gb]: http://www.giantbomb.com
 [bash]: https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
