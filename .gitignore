@@ -1,2 +1,5 @@
 # Don't put secrets in source control
 GiantBombApiKey.json
+
+# VS Code editor stuff
+.vscode/

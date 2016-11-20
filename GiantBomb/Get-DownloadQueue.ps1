@@ -20,13 +20,21 @@ function Get-DownloadQueue {
 
     foreach ($Video in $ConvertedVideos) {
         $GetDetailsUrl = "$($Video)?api_key=$($ApiKey)&format=json&field_list=hd_url,name,video_type"
-        # Write-Host "GetDetailsUrl: $GetDetailsUrl"
 
-        $Response = ((Invoke-WebRequest -Method Get -Uri $GetDetailsUrl).Content | ConvertFrom-Json).results
+        $Response = (Invoke-WebRequest -Method Get -Uri $GetDetailsUrl).Content | ConvertFrom-Json
         Start-Sleep -Milliseconds 1000
 
-        Write-Host "[$($Counter)/$($ConvertedVideos.Count)] $($Response.video_type) > $($Response.name)"
+        Write-Host "[$($Counter)/$($ConvertedVideos.Count)] " -NoNewline
         $Counter += 1
+
+        if ($Response.error -ine "OK") {
+            Write-Host "API response for '$Video' was not OK, skipping." -ForegroundColor Red
+            continue
+        } else {
+            $Response = $Response.results
+        }
+
+        Write-Host "$($Response.video_type) > $($Response.name)"
 
         $VideoPath = "$($BaseDestination)$(Remove-InvalidFileNameChars $Response.video_type)\$(Remove-InvalidFileNameChars $Response.name).mp4"
 
@@ -76,7 +84,7 @@ function Get-DownloadQueue {
         } elseif ($JeffErrorLimitHit.Value `
         -and (Test-Path -LiteralPath $VideoPath -PathType Leaf) `
         -and ((Get-Item -LiteralPath $VideoPath).CreationTime -eq (Get-Item -LiteralPath $VideoPath).LastWriteTime)) {
-            Write-Host "Jeff Error limit was hit; skipping timestamp fix for dummy of '$($Response.name)'." -ForegroundColor Red
+            Write-Host "Jeff Error limit was hit; skipping timestamp fix for dummy of '$($Response.name)'." -ForegroundColor Yellow
         }
 
         Write-Host

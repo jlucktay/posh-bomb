@@ -37,6 +37,8 @@ $DownloadQueue = @()
 
 #------------------------------------------------------------------------------
 
+$Videos += "http://www.giantbomb.com/videos/the-witcher-3-blood-and-vino/2300-11206/"
+$Videos += "http://www.giantbomb.com/videos/quick-look-gears-of-war-4/2300-11632/"
 # $Videos += "http://www.giantbomb.com/videos/quick-look-butcher/2300-11638/"
 # $Videos += "http://www.giantbomb.com/videos/alexs-extra-life-drumstravaganza-part-01/2300-11690/"
 
@@ -123,7 +125,7 @@ $DownloadQueue += Get-DownloadQueue $ConvertedVideos ([ref]$JeffErrorLimitHit)
 $DownloadsCompleted = 0
 
 if ($DownloadQueue.Count -gt 0) {
-    Write-Host "Download queue:"
+    Write-Host "`nDownload queue:"
 
     $DownloadQueue.GetEnumerator() | ForEach-Object { Write-Host "`t$($_.type) > $($_.name) ($($_.url))" }
 
@@ -131,7 +133,7 @@ if ($DownloadQueue.Count -gt 0) {
 
     foreach ($Download in $DownloadQueue) {
         if ($JeffErrorLimitHit) {
-            Write-Host "Jeff Error limit was hit; skipping download of '$($Download.type) > $($Download.name)'.`n" -ForegroundColor Red
+            Write-Host "Jeff Error limit was hit; skipping download of '$($Download.type) > $($Download.name)'.`n" -ForegroundColor Yellow
 
             continue
         }
