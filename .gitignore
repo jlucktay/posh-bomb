@@ -1,0 +1,2 @@
+# Don't put secrets in source control
+GiantBombApiKey.json
