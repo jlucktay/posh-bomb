@@ -1,6 +1,5 @@
 # Giant Bomb dot com and PowerShell, together at last
-## posh-bomb
-### Purpose
+## Purpose
 
 I've been using PowerShell more and more over the past few years, and I've been a [Giant Bomb][gb] fan for even longer. It's high time they got together, and this collection of scripts is a direct result of that most unholy of unions.
 
@@ -25,7 +24,31 @@ This script does the following:
 
 Part of what I want to get out of this project, and most especially from sharing it on GitHub, is some education on best practices in general and also better ways to modularise and structure the code more effectively and efficiently.
 
-### TODO list
+## Current features and functionality
+
+- Download HD videos from Giant Bomb, based on any of the following inputs
+    - Search term
+    - Game name/link
+    - Specific video page link
+    - Video category by ID#
+    - RSS feed
+- Always waits 1 second after every API request (rate limit)
+- Handles errors gracefully and in a reasonable manner
+    - The Jeff Error, caused by too many video download requests too quickly
+    - Filenames with square brackets
+    - Videos that don't give back HD URLs from the API
+- Processes oldest videos first, newest last
+- Only prompts once to download a video
+    - If the user doesn't want a video once, doesn't ask about it again
+- Does all of the prompting first, and only starts downloading after all prompts are exhausted
+- Video names which have characters that are invalid for filenames are scrubbed
+- Downloads to `$($env:HOME)\Videos\Giant Bomb\` with sub-directories for different video types/categories
+    - Creates sub-directory hierarchy if it doesn't already exist
+- Runs a timer on downloads and shows how long each one took
+- Keeps a running count of bytes downloaded
+- Handles pagination accordingly, as some API result sets span multiple pages
+
+## TODO list
 
 - Put in parameter handling for the video search scope, instead of editing the script file directly.
 - Do a menu to choose categories from, rather than having to specify the ID number(s).<a name="catById"></a>
@@ -41,46 +64,7 @@ Part of what I want to get out of this project, and most especially from sharing
 - Get a direct download link for the Jeff Error video file, because:
     - I know I lean on it a lot when I'm developing this monstrosity.
     - The script basically won't work if you don't have a local copy, since it references the size and timestamp properties on the file.
-- Other things.
-
-### Some raw notes that need tidying up
-
-    Download HD videos from Giant Bomb, based on any of the following inputs:
-        - Search term
-        - Game name/link
-        - Specific video page link
-        - Video category by ID#
-        - RSS feed
-
-    Always wait 1 second after every API request (rate limit).
-
-    Handle errors gracefully and in a reasonable manner:
-        - The Jeff Error, caused by too many video download requests too quickly
-        - Filenames with square brackets
-        - Videos that don't give back HD URLs from the API
-
-    Process oldest videos first, newest last.
-
-    Only prompt once to download a video. If we don't want a video once, don't ask about it again.
-
-    Do all of the prompting first, and only start downloading after all prompts are exhausted.
-
-    Video names can and will have characters that are invalid for filenames; get rid of them.
-
-    Download to "$($env:HOME)\Videos\Giant Bomb\" with sub-directories for different video types.
-        - Create sub-directories if they don't already exist.
-
-    Run a timer on downloads and show how long each one took, as well as overall time taken.
-
-    Keep a running count of bytes downloaded also.
-
-    Some API result sets will span multiple pages; handle pagination accordingly.
-
-
-
-
-
-    foreach ($Url in $gbvlArray) { echo "Url: $Url" ; $Url -match "^\/videos\/[a-z0-9\/\.\-]+\/2300\-([0-9]+)\/$" ; $Matches }
+- Show the overall time taken to download.
 
 [gb]: http://www.giantbomb.com
 [bash]: https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
