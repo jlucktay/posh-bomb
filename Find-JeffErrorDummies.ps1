@@ -3,12 +3,14 @@
 $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"
 $JeffErrorPath = "$($BaseDestination)Jeff Error.mp4"
 
-Get-ChildItem -Recurse $BaseDestination `
+$Dummies = Get-ChildItem -Recurse $BaseDestination `
 | Where-Object { `
     !($_.PSIsContainer) `
     -and ((Get-Item -LiteralPath $_.FullName).Length -eq 0) `
     -and ( `
         ((Get-Item -LiteralPath $_.FullName).LastWriteTime -eq (Get-Item -LiteralPath $JeffErrorPath).LastWriteTime) `
         -or ((Get-Item -LiteralPath $_.FullName).CreationTime -eq (Get-Item -LiteralPath $_.FullName).LastWriteTime) `
-    ) } `
-| ForEach-Object { Write-Host $_.FullName }
+    ) }
+
+$Dummies | ForEach-Object { Write-Host $_.FullName }
+Write-Host "# of dummies: $($Dummies | Measure-Object | Select-Object -ExpandProperty Count)"
