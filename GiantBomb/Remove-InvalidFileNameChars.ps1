@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Remove-InvalidFileNameChars {
     param(
         [Parameter(Mandatory=$true,

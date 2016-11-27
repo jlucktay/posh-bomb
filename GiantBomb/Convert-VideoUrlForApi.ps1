@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Convert-VideoUrlForApi {
     #input e.g.
     # "http://www.giantbomb.com/videos/jar-time-w-jeff-09122016/2300-11558/"

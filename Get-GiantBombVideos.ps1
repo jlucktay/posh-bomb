@@ -34,6 +34,7 @@ param(
 # Set up secret, import modules, initialise variables
 
 $ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
 $ApiKeyFile = "$PSScriptRoot\GiantBombApiKey.json"
 
@@ -121,48 +122,44 @@ $DownloadsCompleted = 0
 if ($DownloadQueue.Count -gt 0) {
     Write-Host "`nDownload queue:"
 
-    $DownloadQueue.GetEnumerator() | ForEach-Object { Write-Host "`t$($_.type) > $($_.name) ($($_.url))" }
+    $DownloadQueue.GetEnumerator() | ForEach-Object { Write-Host "`t$($_.Type) > $($_.Name) ($($_.Url))" }
 
     Write-Host
 
     foreach ($Download in $DownloadQueue) {
         if ($JeffErrorLimitHit) {
-            Write-Host "Jeff Error limit was hit; skipping download of '$($Download.type) > $($Download.name)'.`n" -ForegroundColor Yellow
-
+            Write-Host "Jeff Error limit was hit; skipping download of '$($Download.Type) > $($Download.Name)'.`n" -ForegroundColor Yellow
             continue
         }
 
-        if ([Uri]::IsWellFormedUriString($($Download.url), [UriKind]::Absolute)) {
-            $GetVideoUrl = "$($Download.url)?api_key=$($ApiKey)"
+        if (!([Uri]::IsWellFormedUriString($($Download.Url), [UriKind]::Absolute))) {
+            Write-Host "The URI '$($Download.Url)' for '$($Download.Name)' is either not well-formed or not absolute. :(" -ForegroundColor Red
+            continue
+        }
 
-            $HeadResponse = Invoke-WebRequest -Method Head -Uri $GetVideoUrl
-            Start-Sleep -Milliseconds 1000
+        $Download.Url += "?api_key=$($ApiKey)"
 
-            [long]$VideoSize = $HeadResponse.Headers['Content-Length']
-            [DateTime]$VideoLastModified = [DateTime]::Parse($HeadResponse.Headers['Last-Modified'])
+        $HeadResponse = Invoke-WebRequest -Method Head -Uri $Download.Url
+        Start-Sleep -Milliseconds 1000
 
-            if ($VideoLastModified -eq $JeffErrorDateModified) {
-                Write-Host "Jeff Error limit has been hit; skipping download of '$($Download.name)'.`n" -ForegroundColor Red
-                $JeffErrorLimitHit = $true
-            }
+        [long]$VideoSize = $HeadResponse.Headers['Content-Length']
+        [DateTime]$VideoLastModified = [DateTime]::Parse($HeadResponse.Headers['Last-Modified'])
 
-            if (!($JeffErrorLimitHit)) {
-                Write-Host "$($Download.type) > $($Download.name)"
-                Write-Host "`tLast-Modified:`t$("{0:s}" -f $VideoLastModified)"
-                Write-Host ("`t{0:N0}`t{1}" -f $VideoSize, $Download.url)
+        if ($VideoLastModified -eq $JeffErrorDateModified) {
+            Write-Host "Jeff Error limit has been hit; skipping download of '$($Download.Type) > $($Download.Name)'.`n" -ForegroundColor Red
+            $JeffErrorLimitHit = $true
+            continue
+        }
 
-                if ((Save-Video `
-                    -Url $GetVideoUrl `
-                    -VideoName $Download.name `
-                    -VideoType $Download.type `
-                    -ContentLength $VideoSize `
-                    -VideoLastModified $VideoLastModified) -eq $true ) {
-                        $TotalSize += $VideoSize
-                        $DownloadsCompleted += 1
-                    }
-            }
-        } else {
-            Write-Host "The URI '$($Download.url)' for '$($Download.name)' is either not well-formed or not absolute. :(" -ForegroundColor Red
+        Write-Host "$($Download.Type) > $($Download.Name)"
+        Write-Host "`tLast-Modified:`t$("{0:s}" -f $VideoLastModified)"
+        Write-Host ("`t{0:N0}`t{1}" -f $VideoSize, $Download.Url)
+
+        $SaveVideoResult = Save-Video @Download -ContentLength $VideoSize -LastModified $VideoLastModified
+
+        if ($SaveVideoResult -eq $true) {
+            $TotalSize += $VideoSize
+            $DownloadsCompleted += 1
         }
     }
 

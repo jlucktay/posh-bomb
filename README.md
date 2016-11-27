@@ -54,7 +54,7 @@ The script will give you a somewhat reasonable error if you don't do this, but I
 
 There is a JSON file name `GiantBombApiKey.example.json` that needs to be duplicated and renamed to `GiantBombApiKey.json` with a valid key edited into it.
 
-This file is of course in .gitignore already, so don't worry about checking it in accidentially.
+This file is of course in .gitignore already, so don't worry about checking it in accidentally.
 
 ## TODO list
 

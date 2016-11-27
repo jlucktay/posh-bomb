@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Get-VideosFromCategory {
     param(
         [Parameter(Mandatory=$true)]

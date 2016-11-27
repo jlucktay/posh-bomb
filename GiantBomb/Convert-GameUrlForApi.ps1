@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Convert-GameUrlForApi {
     #input e.g.
     # "http://www.giantbomb.com/hitman/3030-45150/"

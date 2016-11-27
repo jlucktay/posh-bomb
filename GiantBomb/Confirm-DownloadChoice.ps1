@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Confirm-DownloadChoice {
     param(
         [Parameter(Mandatory=$true)]

@@ -1,4 +1,6 @@
-# Finds dummy (zero size) files that still match the Jeff Error hence haven't been updated with their proper respective timestamps
+# Finds dummy (zero size) files with timestamps that match the Jeff Error, hence haven't been updated with their own correct timestamp
+
+Set-StrictMode -Version Latest
 
 $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"
 $JeffErrorPath = "$($BaseDestination)Jeff Error.mp4"

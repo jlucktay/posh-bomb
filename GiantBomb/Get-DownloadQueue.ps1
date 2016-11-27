@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 . "$PSScriptRoot\Remove-InvalidFileNameChars.ps1"
 
 function Get-DownloadQueue {
@@ -43,9 +45,9 @@ function Get-DownloadQueue {
         } else {
             if (Confirm-DownloadChoice "$(Remove-InvalidFileNameChars $Response.name)") {
                 $DownloadQueue += @{
-                    url = "$($Response.hd_url)";
-                    name = "$(Remove-InvalidFileNameChars $Response.name)";
-                    type = "$($Response.video_type)"
+                    Url = "$($Response.hd_url)"
+                    Type = "$($Response.video_type)"
+                    Name = "$(Remove-InvalidFileNameChars $Response.name)"
                 }
                 Write-Host "Queued '$($Response.video_type) > $($Response.name)' for download!" -ForegroundColor Green
             } else {
@@ -53,14 +55,6 @@ function Get-DownloadQueue {
                 New-Item -Path "$($VideoPath)" -ItemType File -Force | Out-Null
             }
         }
-
-        # Write-Host "JeffErrorLimitHit: $($JeffErrorLimitHit.Value)"
-        # Write-Host "VideoPath: $VideoPath"
-        # Write-Host "JeffErrorDateModified: $JeffErrorDateModified"
-        # Write-Host "Test-Path: $(Test-Path -LiteralPath $VideoPath -PathType Leaf)"
-        # Write-Host "Length: $((Get-Item -LiteralPath $VideoPath).Length)"
-        # Write-Host "LastWriteTime: $((Get-Item -LiteralPath $VideoPath).LastWriteTime)"
-        # Write-Host "CreationTime: $((Get-Item -LiteralPath $VideoPath).CreationTime)"
 
         if (!($JeffErrorLimitHit.Value) `
         -and (Test-Path -LiteralPath $VideoPath -PathType Leaf) `

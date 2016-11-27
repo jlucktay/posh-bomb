@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Get-VideosFromFeed {
     param(
         [Parameter(Mandatory=$true)]

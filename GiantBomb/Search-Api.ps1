@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Search-Api {
     param(
         [Parameter(Mandatory=$true)]
