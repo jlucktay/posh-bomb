@@ -9,9 +9,9 @@ This script does the following:
 
 1. Interrogates the [Giant Bomb API][gbapi] via a few different methods:
     - Choosing a video category ([by ID, for the moment](#catById)).
-    - Supplying an [RSS feed URL][gbrss]:
+    - Accessing an [RSS feed URL][gbrss]:
         - Note that not all feed types have been tested or even attempted yet.
-        - I have only been using `http://www.giantbomb.com/feeds/video/`.
+        - Currently hard-coded to `http://www.giantbomb.com/feeds/video/`.
     - Supplying a URL for [a game page on the GB wiki][gbgames].
     - Search using keyword(s).
     - Suppyling a URL for a single video:

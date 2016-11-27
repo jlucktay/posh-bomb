@@ -1,31 +1,26 @@
 param(
-    # URL(s) for video itself
     [Parameter(HelpMessage="One or more video page URLs.")]
     [Alias("Url","Video","VideoUrl")]
     [ValidatePattern('^http:\/\/www.giantbomb.com\/videos\/[a-z0-9\-]+\/2300-[0-9]+\/$')]
     [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
     [string[]]$VideoPageUrl,
 
-    # Add videos from the feed URL?
     [Parameter(HelpMessage="Set this switch to add videos from the RSS feed.")]
     [Alias("AddFromFeed","Feed","VideoFeed")]
     [Switch]
     $AddVideosFromFeed,
 
-    # Search strings
     [Parameter(HelpMessage="One or more strings to search for.")]
     [Alias("SearchString")]
     [ValidatePattern('^[a-z0-9 ]+$')]
     [string[]]$Search,
 
-    # URL(s) for game page
     [Parameter(HelpMessage="One or more game page URLs.")]
     [Alias("Game","GameUrl")]
     [ValidatePattern('^http:\/\/www.giantbomb.com\/[a-z0-9\-]+\/3030-[0-9]+\/$')]
     [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
     [string[]]$GamePageUrl,
 
-    # Category number(s)
     [Parameter(HelpMessage="One or more video category numbers.")]
     [Alias("Category")]
     [int[]]$VideoCategory,
@@ -36,6 +31,7 @@ param(
 )
 
 #------------------------------------------------------------------------------
+# Set up secret, import modules, initialise variables
 
 $ErrorActionPreference = "Stop"
 
@@ -49,14 +45,10 @@ if (Test-Path -LiteralPath $ApiKeyFile) {
 
 Import-Module BitsTransfer
 
-#------------------------------------------------------------------------------
-
 $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"
 $JeffErrorPath = "$($BaseDestination)Jeff Error.mp4"
 $JeffErrorSize = (Get-Item -LiteralPath $JeffErrorPath).Length
 [DateTime]$JeffErrorDateModified = (Get-Item -LiteralPath $JeffErrorPath).LastWriteTime
-
-# Write-Host "JeffErrorDateModified: $("{0:s}" -f $JeffErrorDateModified)"
 
 # Empty arrays to fill up later
 $Videos = @()
@@ -64,6 +56,7 @@ $ConvertedVideos = @()
 $DownloadQueue = @()
 
 #------------------------------------------------------------------------------
+# Import functions
 
 . "$PSScriptRoot\GiantBomb\Confirm-DownloadChoice.ps1"
 . "$PSScriptRoot\GiantBomb\Convert-GameUrlForApi.ps1"
@@ -77,6 +70,7 @@ $DownloadQueue = @()
 . "$PSScriptRoot\GiantBomb\Search-Api.ps1"
 
 #------------------------------------------------------------------------------
+# Parse in parameter inputs
 
 foreach ($v in $VideoPageUrl) {
     $Videos += $v
@@ -99,6 +93,7 @@ foreach ($c in $VideoCategory) {
 }
 
 #------------------------------------------------------------------------------
+# Bail out if nothing is queued up
 
 if ($Videos.Length -eq 0) {
     Write-Host "There are zero videos queued for download. Bye!"
@@ -106,6 +101,7 @@ if ($Videos.Length -eq 0) {
 }
 
 #------------------------------------------------------------------------------
+# Set up a single queue in a known format
 
 foreach ($Video in ($Videos | Sort-Object | Get-Unique)) {
     $ConvertedVideos += Convert-VideoUrlForApi $Video
@@ -115,10 +111,9 @@ foreach ($Video in ($Videos | Sort-Object | Get-Unique)) {
 $ConvertedVideos = $ConvertedVideos | Sort-Object { [long]($_.Substring($_.IndexOf("-") + 1, $_.Substring($_.IndexOf("-") + 1).Length - 1)) }
 $TotalSize = 0
 
-# $ConvertedVideos | Format-Table | Write-Host
-
 Write-Host "$($ConvertedVideos.Count) video(s) queued.`n"
 
+# Go through the queue and prompt for download confirmation
 $JeffErrorLimitHit = $false
 $DownloadQueue += Get-DownloadQueue $ConvertedVideos ([ref]$JeffErrorLimitHit)
 $DownloadsCompleted = 0
