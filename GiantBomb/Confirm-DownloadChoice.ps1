@@ -4,6 +4,10 @@ function Confirm-DownloadChoice {
         [string]$VideoName
     )
 
+    if ($SkipConfirm) {
+        return $false
+    }
+
     $Message = "Confirm: do you really want to download '$($VideoName)'?"
 
     $Yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", `

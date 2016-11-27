@@ -58,7 +58,6 @@ This file is of course in .gitignore already, so don't worry about checking it i
 
 ## TODO list
 
-- Put in parameter handling for the video search scope, instead of editing the script file directly.
 - Do a menu to choose categories from, rather than having to specify the ID number(s).<a name="catById"></a>
 - Paginate for all lookup types; currently only doing it for `Search-Api` and `Get-VideosFromCategory`.
 - Needs to handle the following:

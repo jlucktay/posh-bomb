@@ -1,3 +1,42 @@
+param(
+    # URL(s) for video itself
+    [Parameter(HelpMessage="One or more video page URLs.")]
+    [Alias("Url","Video","VideoUrl")]
+    [ValidatePattern('^http:\/\/www.giantbomb.com\/videos\/[a-z0-9\-]+\/2300-[0-9]+\/$')]
+    [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
+    [string[]]$VideoPageUrl,
+
+    # Add videos from the feed URL?
+    [Parameter(HelpMessage="Set this switch to add videos from the RSS feed.")]
+    [Alias("AddFromFeed","Feed","VideoFeed")]
+    [Switch]
+    $AddVideosFromFeed,
+
+    # Search strings
+    [Parameter(HelpMessage="One or more strings to search for.")]
+    [Alias("SearchString")]
+    [ValidatePattern('^[a-z0-9 ]+$')]
+    [string[]]$Search,
+
+    # URL(s) for game page
+    [Parameter(HelpMessage="One or more game page URLs.")]
+    [Alias("Game","GameUrl")]
+    [ValidatePattern('^http:\/\/www.giantbomb.com\/[a-z0-9\-]+\/3030-[0-9]+\/$')]
+    [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
+    [string[]]$GamePageUrl,
+
+    # Category number(s)
+    [Parameter(HelpMessage="One or more video category numbers.")]
+    [Alias("Category")]
+    [int[]]$VideoCategory,
+
+    [Parameter(HelpMessage="Skip the confirmation prompts and don't download anything.")]
+    [Switch]
+    $SkipConfirm
+)
+
+#------------------------------------------------------------------------------
+
 $ErrorActionPreference = "Stop"
 
 $ApiKeyFile = "$PSScriptRoot\GiantBombApiKey.json"
@@ -9,6 +48,8 @@ if (Test-Path -LiteralPath $ApiKeyFile) {
 }
 
 Import-Module BitsTransfer
+
+#------------------------------------------------------------------------------
 
 $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"
 $JeffErrorPath = "$($BaseDestination)Jeff Error.mp4"
@@ -37,67 +78,25 @@ $DownloadQueue = @()
 
 #------------------------------------------------------------------------------
 
-$Videos += "http://www.giantbomb.com/videos/the-witcher-3-blood-and-vino/2300-11206/"
-$Videos += "http://www.giantbomb.com/videos/quick-look-gears-of-war-4/2300-11632/"
-# $Videos += "http://www.giantbomb.com/videos/quick-look-butcher/2300-11638/"
-# $Videos += "http://www.giantbomb.com/videos/alexs-extra-life-drumstravaganza-part-01/2300-11690/"
+foreach ($v in $VideoPageUrl) {
+    $Videos += $v
+}
 
-# $Videos += Search-Api "Endurance Run Shenmue"
-# $Videos += Search-Api "Gears of War 4"
+if ($AddVideosFromFeed) {
+    $Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
+}
 
-$Videos += Get-VideosFromGame "http://www.giantbomb.com/mercenaries-playground-of-destruction/3030-7633/"
-$Videos += Get-VideosFromGame "http://www.giantbomb.com/mercenaries-2-world-in-flames/3030-20697/"
-$Videos += Get-VideosFromGame "http://www.giantbomb.com/mercs-inc/3030-29285/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/destiny/3030-36067/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/the-legend-of-zelda-breath-of-the-wild/3030-41355/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/the-witcher-3-wild-hunt/3030-41484/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/hitman/3030-45150/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/gears-of-war-4/3030-45269/"
-$Videos += Get-VideosFromGame "http://www.giantbomb.com/mass-effect-andromeda/3030-46631/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/rise-of-the-tomb-raider/3030-46549/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/rock-band-4/3030-49077/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/titanfall-2/3030-49139/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/everspace/3030-52950/"
-# $Videos += Get-VideosFromGame "http://www.giantbomb.com/watch-dogs-2/3030-54066/"
+foreach ($s in $Search) {
+    $Videos += Search-Api $s
+}
 
-<# categories
+foreach ($g in $GamePageUrl) {
+    $Videos += Get-VideosFromGame $g
+}
 
-Invoke-WebRequest -UseBasicParsing -Uri "http://www.giantbomb.com/api/video_categories/?api_key=$ApiKey&format=json" | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty results | Format-Table -Property id,name,deck
-
-id name
--- ----
- 2 Reviews
- 3 Quick Looks
- 4 TANG
- 5 Endurance Run
- 6 Events
- 7 Trailers
- 8 Features
-10 Premium
-11 Extra Life
-12 Encyclopedia Bombastica
-13 Unfinished
-17 Metal Gear Scanlon
-18 VinnyVania
-19 Breaking Brad
-20 Best of Giant Bomb
-21 Game Tapes
-22 Kerbal: Project B.E.A.S.T
-23 Giant Bombcast
-24 Blue Bombin'
-#>
-
-# $Videos += Get-VideosFromCategory 7
-# $Videos += Get-VideosFromCategory 17
-# $Videos += Get-VideosFromCategory 19
-# $Videos += Get-VideosFromCategory 20
-# $Videos += Get-VideosFromCategory 22
-
-# $Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
-
-# $Videos
-# $Videos | Format-Table | Write-Host
-# $Videos | Sort-Object | Get-Unique | Format-Table | Write-Host
+foreach ($c in $VideoCategory) {
+    $Videos += Get-VideosFromCategory $c
+}
 
 #------------------------------------------------------------------------------
 
