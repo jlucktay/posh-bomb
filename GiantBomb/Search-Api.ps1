@@ -44,7 +44,7 @@ function Search-Api {
 
     $Return = $Return | Get-Unique
 
-    Write-Host " Filtered to $($Return.Count) matching unique result(s)."
+    Write-Host " Filtered to $(if ($Return) { $Return.Count } else { "0" }) matching unique result(s)."
 
     return $Return
 }
