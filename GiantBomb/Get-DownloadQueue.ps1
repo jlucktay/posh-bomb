@@ -36,9 +36,16 @@ function Get-DownloadQueue {
             $Response = $Response.results
         }
 
+        if ($null -eq $Response.video_type) {
+            $Response.video_type = "null"
+        }
+
         Write-Host "$($Response.video_type) > $($Response.name)"
 
-        $VideoPath = "$($BaseDestination)$(Remove-InvalidFileNameChars $Response.video_type)\$(Remove-InvalidFileNameChars $Response.name).mp4"
+        $CleanVideoType = Remove-InvalidFileNameChars $Response.video_type
+        $CleanName = Remove-InvalidFileNameChars $Response.name
+
+        $VideoPath = "$BaseDestination$CleanVideoType\$CleanName.mp4"
 
         if (Test-Path -LiteralPath $VideoPath) {
             Write-Host "'$($VideoPath)' already exists, moving on!" -ForegroundColor DarkGreen

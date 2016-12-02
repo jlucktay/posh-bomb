@@ -31,7 +31,7 @@ param(
 )
 
 #------------------------------------------------------------------------------
-# Set up secret, import modules, initialise variables
+# Set up some things like the secret API key, import some modules, initialise some variables
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
