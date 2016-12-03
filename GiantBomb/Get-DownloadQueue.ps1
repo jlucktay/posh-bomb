@@ -79,6 +79,11 @@ function Get-DownloadQueue {
                 Write-Host "Fixing dummy timestamp to '$("{0:s}" -f $VideoLastModified)'..." -ForegroundColor Yellow
                 (Get-Item -LiteralPath "$($VideoPath)").LastWriteTime = $VideoLastModified
             } else {
+                if ($JeffErrorQuit) {
+                    Write-Host "Jeff Error limit has been hit; quitting." -ForegroundColor Red
+                    exit 1
+                }
+
                 Write-Host "Jeff Error limit has been hit." -ForegroundColor Red
                 $JeffErrorLimitHit.Value = $true
             }

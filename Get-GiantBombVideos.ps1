@@ -27,7 +27,12 @@ param(
 
     [Parameter(HelpMessage="Skip the confirmation prompts and don't download anything.")]
     [Switch]
-    $SkipConfirm
+    $SkipConfirm,
+
+    [Parameter(HelpMessage="Stop running if/when we run into the Jeff Error.")]
+    [Alias("Jeff","JeffError")]
+    [Switch]
+    $JeffErrorQuit
 )
 
 #------------------------------------------------------------------------------
@@ -146,6 +151,11 @@ if ($DownloadQueue.Count -gt 0) {
         [DateTime]$VideoLastModified = [DateTime]::Parse($HeadResponse.Headers['Last-Modified'])
 
         if ($VideoLastModified -eq $JeffErrorDateModified) {
+            if ($JeffErrorQuit) {
+                Write-Host "Jeff Error limit has been hit; quitting." -ForegroundColor Red
+                exit 1
+            }
+
             Write-Host "Jeff Error limit has been hit; skipping download of '$($Download.Type) > $($Download.Name)'.`n" -ForegroundColor Red
             $JeffErrorLimitHit = $true
             continue
