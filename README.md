@@ -60,11 +60,6 @@ This file is of course in .gitignore already, so don't worry about checking it i
 
 - Do a menu to choose categories from, rather than having to specify the ID number(s).<a name="catById"></a>
 - Paginate for all lookup types; currently only doing it for `Search-Api` and `Get-VideosFromCategory`.
-- Needs to handle the following:
-    - Empty URLs from the API e.g. the botched Gears 4 QL:
-        - `http://www.giantbomb.com/videos/quick-look-gears-of-war-4/2300-11632/`
-    - Filenames with square brackets:
-        - `http://www.giantbomb.com/videos/the-witcher-3-blood-and-vino/2300-11206/`
 - Show estimates for download times:
     - Might not be possible with the BITS command currently in use.
     - Maybe just calculate these based on 5/10/15 Mbps to give a broad sense of timing.
