@@ -3,3 +3,6 @@ GiantBombApiKey.json
 
 # VS Code editor stuff
 .vscode/
+
+# Local script with random scraps and notes
+/Do-It.ps1
