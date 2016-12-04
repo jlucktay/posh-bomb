@@ -65,8 +65,7 @@ $DownloadQueue = @()
 # Import functions
 
 . "$PSScriptRoot\GiantBomb\Confirm-DownloadChoice.ps1"
-. "$PSScriptRoot\GiantBomb\Convert-GameUrlForApi.ps1"
-. "$PSScriptRoot\GiantBomb\Convert-VideoUrlForApi.ps1"
+. "$PSScriptRoot\GiantBomb\Convert-UrlForApi.ps1"
 . "$PSScriptRoot\GiantBomb\Get-DownloadQueue.ps1"
 . "$PSScriptRoot\GiantBomb\Get-VideosFromCategory.ps1"
 . "$PSScriptRoot\GiantBomb\Get-VideosFromFeed.ps1"
@@ -110,7 +109,7 @@ if ($Videos.Length -eq 0) {
 # Set up a single queue in a known format
 
 foreach ($Video in ($Videos | Sort-Object | Get-Unique)) {
-    $ConvertedVideos += Convert-VideoUrlForApi $Video
+    $ConvertedVideos += Convert-UrlForApi $Video
 }
 
 # Sort the videos by their unique IDs in the tail end of the URL
