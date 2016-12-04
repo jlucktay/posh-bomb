@@ -8,7 +8,7 @@ For real though, I wrote something very similar to this years ago in [bash][bash
 This script does the following:
 
 1. Interrogates the [Giant Bomb API][gbapi] via a few different methods:
-    - Choosing a video category ([by ID, for the moment](#catById)).
+    - Choosing a video category ([by ID, for the moment](./TODO.md#catById)).
     - Accessing an [RSS feed URL][gbrss]:
         - Note that not all feed types have been tested or even attempted yet.
         - Currently hard-coded to `http://www.giantbomb.com/feeds/video/`.
@@ -55,20 +55,6 @@ The script will give you a somewhat reasonable error if you don't do this, but I
 There is a JSON file name `GiantBombApiKey.example.json` that needs to be duplicated and renamed to `GiantBombApiKey.json` with a valid key edited into it.
 
 This file is of course in .gitignore already, so don't worry about checking it in accidentally.
-
-## TODO list
-
-- Do a menu to choose categories from, rather than having to specify the ID number(s).<a name="catById"></a>
-- Paginate for all lookup types; currently only doing it for `Search-Api` and `Get-VideosFromCategory`.
-- Show estimates for download times:
-    - Might not be possible with the BITS command currently in use.
-    - Maybe just calculate these based on 5/10/15 Mbps to give a broad sense of timing.
-- Get a direct download link for the Jeff Error video file, because:
-    - I know I lean on it a lot when I'm developing this monstrosity.
-    - The script basically won't work if you don't have a local copy, since it references the size and timestamp properties on the file.
-- Show the overall time taken to download.
-- Put a wrapper around Invoke-WebRequest to combine the 1 second sleep into one call, rather than having to remember to add the sleep line every time.
-- Write some Pester tests to cover this whole mess.
 
 [gb]: http://www.giantbomb.com
 [bash]: https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
