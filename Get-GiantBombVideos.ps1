@@ -35,11 +35,11 @@ param(
     $JeffErrorQuit
 )
 
-#------------------------------------------------------------------------------
-# Set up some things like the secret API key, import some modules, initialise some variables
-
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
+
+#------------------------------------------------------------------------------
+# Set up some things like the secret API key, import some modules, initialise some variables
 
 $ApiKeyFile = "$PSScriptRoot\GiantBombApiKey.json"
 

@@ -6,7 +6,7 @@ function Convert-UrlForApi {
         [Parameter(Mandatory=$true)]
         [ValidatePattern('^http:\/\/www.giantbomb.com\/(videos\/)?[a-z0-9\-]+\/[0-9]+-')]
         [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
-        [String]$Url
+        [string]$Url
     )
 
     if ($Url -match "\/3030\-[0-9]+\/$") {

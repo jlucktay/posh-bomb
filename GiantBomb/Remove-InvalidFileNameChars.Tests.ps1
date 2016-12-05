@@ -14,8 +14,8 @@ Describe "Remove-InvalidFileNameChars" {
     }
 
     It "doesn't alter strings that are already technically valid" {
-        Remove-InvalidFileNameChars -Name "a" |
-            Should Be "a"
+        Remove-InvalidFileNameChars -Name "!a£b`$c€d%e^" |
+            Should Be "!a£b`$c€d%e^"
     }
 
     It "accurately modifies strings that are technically invalid" {
