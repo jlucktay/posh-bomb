@@ -1,10 +1,13 @@
+$ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
+
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 Describe "Remove-InvalidFileNameChars" {
-    It "requires the Name parameter" {
-        { Remove-InvalidFileNameChars -Confirm:$false } |
+    It "requires a value for the Name parameter" {
+        { Remove-InvalidFileNameChars -Name } |
             Should Throw
     }
 

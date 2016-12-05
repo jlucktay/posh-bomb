@@ -8,7 +8,7 @@ function Remove-InvalidFileNameChars {
     )
 
     $InvalidChars = [IO.Path]::GetInvalidFileNameChars() -join ''
-    $Regex = "[{0}]" -f [RegEx]::Escape($InvalidChars)
+    $Regex = "[$([RegEx]::Escape($InvalidChars))]"
 
     return ($Name -replace $Regex)
 }
