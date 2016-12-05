@@ -1,3 +1,4 @@
+$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 function Confirm-DownloadChoice {
@@ -6,7 +7,7 @@ function Confirm-DownloadChoice {
         [string]$VideoName
     )
 
-    if ($SkipConfirm) {
+    if ((Test-Path Variable:SkipConfirm) -and $SkipConfirm) {
         return $false
     }
 

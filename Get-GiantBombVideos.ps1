@@ -57,7 +57,6 @@ $JeffErrorSize = (Get-Item -LiteralPath $JeffErrorPath).Length
 [DateTime]$JeffErrorDateModified = (Get-Item -LiteralPath $JeffErrorPath).LastWriteTime
 
 # Empty arrays to fill up later
-$Videos = @()
 $ConvertedVideos = @()
 $DownloadQueue = @()
 
@@ -75,41 +74,50 @@ $DownloadQueue = @()
 . "$PSScriptRoot\GiantBomb\Search-Api.ps1"
 
 #------------------------------------------------------------------------------
+# Set up a single queue of API URLs to iterate through
+
+$ConvertedList = New-Object System.Collections.Generic.List[System.String]
+
+#------------------------------------------------------------------------------
 # Parse in parameter inputs
 
 foreach ($v in $VideoPageUrl) {
-    $Videos += $v
+    $ConvertedList.Add((Convert-UrlForApi $v))
 }
 
 if ($AddVideosFromFeed) {
-    $Videos += Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
+    foreach ($v in (Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/")) {
+        $ConvertedList.Add((Convert-UrlForApi $v))
+    }
 }
 
 foreach ($s in $Search) {
-    $Videos += Search-Api $s
+    foreach ($v in (Search-Api $s)) {
+        $ConvertedList.Add((Convert-UrlForApi $v))
+    }
 }
 
 foreach ($g in $GamePageUrl) {
-    $Videos += Get-VideosFromGame $g
+    foreach ($v in (Get-VideosFromGame $g)) {
+        $ConvertedList.Add((Convert-UrlForApi $v))
+    }
 }
 
 foreach ($c in $VideoCategory) {
-    $Videos += Get-VideosFromCategory $c
+    foreach ($v in (Get-VideosFromCategory $c)) {
+        $ConvertedList.Add((Convert-UrlForApi $v))
+    }
 }
+
+$ConvertedList.Sort()
+$ConvertedVideos = $ConvertedList.ToArray() | Get-Unique
 
 #------------------------------------------------------------------------------
 # Bail out if nothing is queued up
 
-if ($Videos.Length -eq 0) {
+if ($ConvertedVideos.Length -eq 0) {
     Write-Host "There are zero videos queued for download. Bye!"
     exit 0
-}
-
-#------------------------------------------------------------------------------
-# Set up a single queue in a known format
-
-foreach ($Video in ($Videos | Sort-Object | Get-Unique)) {
-    $ConvertedVideos += Convert-UrlForApi $Video
 }
 
 # Sort the videos by their unique IDs in the tail end of the URL

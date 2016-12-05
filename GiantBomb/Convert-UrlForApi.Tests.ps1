@@ -3,8 +3,14 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 Describe "Convert-UrlForApi" {
-    It "requires the URL parameter" {
+
+    It "requires the URL parameter" -Skip {
         { Convert-UrlForApi -Confirm:$false } |
+            Should Throw
+    }
+
+    It "requires a value for the URL parameter" {
+        { Convert-UrlForApi -Url } |
             Should Throw
     }
 
