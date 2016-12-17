@@ -89,6 +89,7 @@ function Get-DownloadQueue {
             }
         } elseif ($JeffErrorLimitHit.Value `
         -and (Test-Path -LiteralPath $VideoPath -PathType Leaf) `
+        -and ((Get-Item -LiteralPath $VideoPath).Length -eq 0) `
         -and ((Get-Item -LiteralPath $VideoPath).CreationTime -eq (Get-Item -LiteralPath $VideoPath).LastWriteTime)) {
             Write-Host "Jeff Error limit was hit; skipping timestamp fix for dummy of '$($Response.name)'." -ForegroundColor Yellow
         }

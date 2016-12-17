@@ -1,3 +1,4 @@
+$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 function Get-VideosFromFeed {
