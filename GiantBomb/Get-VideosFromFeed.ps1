@@ -7,9 +7,9 @@ function Get-VideosFromFeed {
         [String]$VideoFeedUrl
     )
 
-    Write-Host "Getting video feed '$($VideoFeedUrl)'..." -NoNewline
+    Write-Host "Getting video feed '$VideoFeedUrl'..." -NoNewline
 
-    $VideoFeedResponse = ([xml](Invoke-WebRequest -Uri "$($VideoFeedUrl)").Content).rss.channel.item
+    $VideoFeedResponse = ([xml](Invoke-WebRequest -Uri "$VideoFeedUrl").Content).rss.channel.item
     Start-Sleep -Milliseconds 1000
 
     $Return = @()
@@ -18,7 +18,7 @@ function Get-VideosFromFeed {
         $Return += $VideoFeedItem.link
     }
 
-    Write-Host " Got $($Return.Count) video(s) from feed $($VideoFeedUrl)."
+    Write-Host " Got $($Return.Count) video(s) from feed $VideoFeedUrl."
 
     return $Return
 }

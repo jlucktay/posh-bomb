@@ -18,7 +18,7 @@ function Save-Video {
         [DateTime]$LastModified
     )
 
-    $DestinationDirectory = "$($BaseDestination)$($Type)\"
+    $DestinationDirectory = "$BaseDestination$Type\"
 
     while (!(Test-Path -LiteralPath $DestinationDirectory -PathType Container)) {
         New-Item -ItemType Directory -Force -Path $DestinationDirectory | Out-Null
@@ -39,10 +39,10 @@ function Save-Video {
         } else {
             if ((Get-Item -LiteralPath $Output).Length -eq $ContentLength) {
                 Write-Host "'$Output' has already been downloaded.`n" -ForegroundColor Green
-                (Get-Item -LiteralPath "$($Output)").LastWriteTime = $LastModified
+                (Get-Item -LiteralPath "$Output").LastWriteTime = $LastModified
             } elseif ((Get-Item -LiteralPath $Output).Length -eq 0) {
                 Write-Host "A dummy placeholder already exists for '$Output'.`n" -ForegroundColor Green
-                (Get-Item -LiteralPath "$($Output)").LastWriteTime = $LastModified
+                (Get-Item -LiteralPath "$Output").LastWriteTime = $LastModified
             } elseif ($ContentLength -eq $JeffErrorSize) {
                 Write-Host "We're hitting the API limit and getting the Jeff Error instead of an actual video.`n" -ForegroundColor Magenta
             } else {
@@ -69,7 +69,7 @@ function Save-Video {
         "$([Math]::Round((Get-Date).Subtract($StartTime).TotalMinutes, 3)) minute(s) /" `
         "$([Math]::Round((Get-Date).Subtract($StartTime).TotalHours, 3)) hour(s).`n" -ForegroundColor Cyan
 
-    (Get-Item -LiteralPath "$($Output)").LastWriteTime = $LastModified
+    (Get-Item -LiteralPath "$Output").LastWriteTime = $LastModified
 
     return $true
 }

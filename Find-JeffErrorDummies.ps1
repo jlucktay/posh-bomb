@@ -3,7 +3,7 @@
 Set-StrictMode -Version Latest
 
 $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"
-$JeffErrorPath = "$($BaseDestination)Jeff Error.mp4"
+$JeffErrorPath = "$BaseDestination\Jeff Error.mp4"
 
 $Dummies = Get-ChildItem -Recurse $BaseDestination `
 | Where-Object { `

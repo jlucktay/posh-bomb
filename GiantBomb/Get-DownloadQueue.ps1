@@ -1,3 +1,4 @@
+$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 . "$PSScriptRoot\Remove-InvalidFileNameChars.ps1"
@@ -21,12 +22,12 @@ function Get-DownloadQueue {
     $Counter = 1
 
     foreach ($Video in $ConvertedVideos) {
-        $GetDetailsUrl = "$($Video)?api_key=$($ApiKey)&format=json&field_list=hd_url,name,video_type"
+        $GetDetailsUrl = "$Video?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type"
 
         $Response = (Invoke-WebRequest -Method Get -Uri $GetDetailsUrl).Content | ConvertFrom-Json
         Start-Sleep -Milliseconds 1000
 
-        Write-Host "[$($Counter)/$($ConvertedVideos.Count)] " -NoNewline
+        Write-Host "[$Counter/$($ConvertedVideos.Count)] " -NoNewline
         $Counter += 1
 
         if ($Response.error -ine "OK") {
@@ -48,7 +49,7 @@ function Get-DownloadQueue {
         $VideoPath = "$BaseDestination$CleanVideoType\$CleanName.mp4"
 
         if (Test-Path -LiteralPath $VideoPath) {
-            Write-Host "'$($VideoPath)' already exists, moving on!" -ForegroundColor DarkGreen
+            Write-Host "'$VideoPath' already exists, moving on!" -ForegroundColor DarkGreen
         } else {
             if (Confirm-DownloadChoice "$(Remove-InvalidFileNameChars $Response.name)") {
                 $DownloadQueue += @{
@@ -59,7 +60,7 @@ function Get-DownloadQueue {
                 Write-Host "Queued '$($Response.video_type) > $($Response.name)' for download!" -ForegroundColor Green
             } else {
                 Write-Host "Creating a dummy placeholder for '$($Response.name)'..." -ForegroundColor Yellow
-                New-Item -Path "$($VideoPath)" -ItemType File -Force | Out-Null
+                New-Item -Path "$VideoPath" -ItemType File -Force | Out-Null
             }
         }
 
@@ -70,14 +71,14 @@ function Get-DownloadQueue {
             ((Get-Item -LiteralPath $VideoPath).LastWriteTime -eq $JeffErrorDateModified) `
             -or (((Get-Item -LiteralPath $VideoPath).CreationTime) -eq (Get-Item -LiteralPath $VideoPath).LastWriteTime))
         ) {
-            $HeadResponse = Invoke-WebRequest -Method Head -Uri "$($Response.hd_url)?api_key=$($ApiKey)"
+            $HeadResponse = Invoke-WebRequest -Method Head -Uri "$($Response.hd_url)?api_key=$ApiKey"
             Start-Sleep -Milliseconds 1000
 
             [DateTime]$VideoLastModified = [DateTime]::Parse($HeadResponse.Headers['Last-Modified'])
 
             if ($VideoLastModified -ne $JeffErrorDateModified) {
                 Write-Host "Fixing dummy timestamp to '$("{0:s}" -f $VideoLastModified)'..." -ForegroundColor Yellow
-                (Get-Item -LiteralPath "$($VideoPath)").LastWriteTime = $VideoLastModified
+                (Get-Item -LiteralPath "$VideoPath").LastWriteTime = $VideoLastModified
             } else {
                 if ($JeffErrorQuit) {
                     Write-Host "Jeff Error limit has been hit; quitting." -ForegroundColor Red

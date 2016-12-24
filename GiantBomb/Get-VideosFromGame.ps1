@@ -14,9 +14,9 @@ function Get-VideosFromGame {
 
     Write-Host "Getting videos from game '$($Matches[1])'..." -NoNewline
 
-    $GameApiUrl = "$(Convert-UrlForApi $Matches[0])?api_key=$($ApiKey)&format=json&field_list=videos"
+    $GameApiUrl = "$(Convert-UrlForApi $Matches[0])?api_key=$ApiKey&format=json&field_list=videos"
 
-    $GameResponse = ((Invoke-WebRequest -Uri "$($GameApiUrl)").Content | ConvertFrom-Json)
+    $GameResponse = ((Invoke-WebRequest -Uri "$GameApiUrl").Content | ConvertFrom-Json)
     Start-Sleep -Milliseconds 1000
 
     $Return = @()

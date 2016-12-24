@@ -25,6 +25,11 @@ param(
     [Alias("Category")]
     [int[]]$VideoCategory,
 
+    [Parameter(HelpMessage="Get all of the videos. ALL OF THEM.")]
+    [Alias("All","Everything")]
+    [Switch]
+    $AllVideos,
+
     [Parameter(HelpMessage="Skip the confirmation prompts and don't download anything.")]
     [Switch]
     $SkipConfirm,
@@ -38,6 +43,8 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+Import-Module BitsTransfer
+
 #------------------------------------------------------------------------------
 # Set up some things like the secret API key, import some modules, initialise some variables
 
@@ -49,10 +56,8 @@ if (Test-Path -LiteralPath $ApiKeyFile) {
     throw "The API key file was not found at '$ApiKeyFile'."
 }
 
-Import-Module BitsTransfer
-
 $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"
-$JeffErrorPath = "$($BaseDestination)Jeff Error.mp4"
+$JeffErrorPath = "$BaseDestination\Jeff Error.mp4"
 $JeffErrorSize = (Get-Item -LiteralPath $JeffErrorPath).Length
 [DateTime]$JeffErrorDateModified = (Get-Item -LiteralPath $JeffErrorPath).LastWriteTime
 
@@ -65,6 +70,7 @@ $DownloadQueue = @()
 
 . "$PSScriptRoot\GiantBomb\Confirm-DownloadChoice.ps1"
 . "$PSScriptRoot\GiantBomb\Convert-UrlForApi.ps1"
+. "$PSScriptRoot\GiantBomb\Get-AllVideos.ps1"
 . "$PSScriptRoot\GiantBomb\Get-DownloadQueue.ps1"
 . "$PSScriptRoot\GiantBomb\Get-VideosFromCategory.ps1"
 . "$PSScriptRoot\GiantBomb\Get-VideosFromFeed.ps1"
@@ -80,6 +86,12 @@ $ConvertedList = New-Object System.Collections.Generic.List[System.String]
 
 #------------------------------------------------------------------------------
 # Parse in parameter inputs
+
+if ($AllVideos) {
+    foreach ($v in (Get-AllVideos)) {
+        $ConvertedList.Add((Convert-UrlForApi $v))
+    }
+}
 
 foreach ($v in $VideoPageUrl) {
     $ConvertedList.Add((Convert-UrlForApi $v))
@@ -149,7 +161,7 @@ if ($DownloadQueue.Count -gt 0) {
             continue
         }
 
-        $Download.Url += "?api_key=$($ApiKey)"
+        $Download.Url += "?api_key=$ApiKey"
 
         $HeadResponse = Invoke-WebRequest -Method Head -Uri $Download.Url
         Start-Sleep -Milliseconds 1000
@@ -188,5 +200,5 @@ if ($DownloadsCompleted -eq 0) {
     Write-Host "Zero downloads from $($ConvertedVideos.Count) video(s) found.`n" -ForegroundColor Red
     exit $ConvertedVideos.Count
 } else {
-    Write-Host "Downloads completed: $($DownloadsCompleted)`n"
+    Write-Host "Downloads completed: $DownloadsCompleted`n"
 }
