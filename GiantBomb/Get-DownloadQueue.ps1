@@ -22,7 +22,7 @@ function Get-DownloadQueue {
     $Counter = 1
 
     foreach ($Video in $ConvertedVideos) {
-        $GetDetailsUrl = "$Video?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type"
+        $GetDetailsUrl = "$($Video)?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type"
 
         $Response = (Invoke-WebRequest -Method Get -Uri $GetDetailsUrl).Content | ConvertFrom-Json
         Start-Sleep -Milliseconds 1000
