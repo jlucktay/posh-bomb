@@ -131,7 +131,7 @@ $ConvertedVideos = $ConvertedList.ToArray() | Get-Unique
 #------------------------------------------------------------------------------
 # Bail out if nothing is queued up
 
-if ($ConvertedVideos.Length -eq 0) {
+if (($null -eq $ConvertedVideos) -or ($ConvertedVideos.Length -eq 0)) {
     Write-Host "There are zero videos queued for download. Bye!"
     exit 0
 }

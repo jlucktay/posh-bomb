@@ -8,7 +8,7 @@ function Get-AllVideos {
         [long]$SkipIndex
     )
 
-    Write-Host "Getting all videos... " -NoNewline
+    Write-Host "Getting all videos$(if ($SkipIndex) { " (and skipping $SkipIndex)" })... " -NoNewline
 
     $BaseAllVideosUrl = "http://www.giantbomb.com/api/videos/?api_key=$ApiKey&format=json&field_list=site_detail_url&sort=id:asc"
 
