@@ -31,7 +31,7 @@ function Get-DownloadQueue {
         $Counter += 1
 
         if ($Response.error -ine "OK") {
-            Write-Host "API response for '$Video' was not OK, skipping." -ForegroundColor Red
+            Write-Host "API response for '$Video' was not OK, skipping.`n" -ForegroundColor Red
             continue
         } else {
             $Response = $Response.results

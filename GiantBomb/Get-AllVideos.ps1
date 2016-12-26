@@ -2,6 +2,12 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 function Get-AllVideos {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [long]$SkipIndex
+    )
+
     Write-Host "Getting all videos... " -NoNewline
 
     $BaseAllVideosUrl = "http://www.giantbomb.com/api/videos/?api_key=$ApiKey&format=json&field_list=site_detail_url&sort=id:asc"
@@ -14,10 +20,10 @@ function Get-AllVideos {
     $ResultCount = 0
     $ReturnList = New-Object System.Collections.Generic.List[System.String]
 
-    while ($ResultCount -lt $($InitialResponse.number_of_total_results)) {
-        Write-Host "$ResultCount " -NoNewline
+    while (($ResultCount + $SkipIndex) -lt $($InitialResponse.number_of_total_results)) {
+        Write-Host "$($ResultCount + $SkipIndex) " -NoNewline
 
-        $PageResponse = ((Invoke-WebRequest -Uri "$BaseAllVideosUrl&offset=$ResultCount").Content | ConvertFrom-Json)
+        $PageResponse = ((Invoke-WebRequest -Uri "$BaseAllVideosUrl&offset=$($ResultCount + $SkipIndex)").Content | ConvertFrom-Json)
         Start-Sleep -Milliseconds 1000
 
         $ResultCount += $PageResponse.number_of_page_results

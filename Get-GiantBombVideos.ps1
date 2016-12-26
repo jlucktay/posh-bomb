@@ -30,6 +30,10 @@ param(
     [Switch]
     $AllVideos,
 
+    [Parameter(HelpMessage="Skip ahead by this many videos when -AllVideos is true.")]
+    [Alias("SkipToVideo")]
+    [long]$SkipIndex = 0,
+
     [Parameter(HelpMessage="Skip the confirmation prompts and don't download anything.")]
     [Switch]
     $SkipConfirm,
@@ -88,7 +92,7 @@ $ConvertedList = New-Object System.Collections.Generic.List[System.String]
 # Parse in parameter inputs
 
 if ($AllVideos) {
-    foreach ($v in (Get-AllVideos)) {
+    foreach ($v in (Get-AllVideos -SkipIndex $SkipIndex)) {
         $ConvertedList.Add((Convert-UrlForApi $v))
     }
 }
