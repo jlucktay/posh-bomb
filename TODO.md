@@ -11,6 +11,4 @@
 - Show the overall time taken to download.
 - Put a wrapper around Invoke-WebRequest to combine the 1 second sleep into one call, rather than having to remember to add the sleep line every time.
 - Write some more Pester tests to cover this whole mess.
-- Download all of the ~things~ videos:
-    - `http://www.giantbomb.com/api/videos/?api_key=$ApiKey&format=json&field_list=api_detail_url&sort=id:asc`
 - Double check the sort order of the converted videos list.
