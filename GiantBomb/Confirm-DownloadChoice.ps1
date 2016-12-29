@@ -11,6 +11,10 @@ function Confirm-DownloadChoice {
         return $false
     }
 
+    if ((Test-Path Variable:AlwaysConfirm) -and $AlwaysConfirm) {
+        return $true
+    }
+
     $Message = "Confirm: do you really want to download '$VideoName'?"
 
     $Yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", `

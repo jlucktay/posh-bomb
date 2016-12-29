@@ -38,6 +38,10 @@ param(
     [Switch]
     $SkipConfirm,
 
+    [Parameter(HelpMessage="Always say yes to the confirmation prompts and download everything.")]
+    [Switch]
+    $AlwaysConfirm,
+
     [Parameter(HelpMessage="Stop running if/when we run into the Jeff Error.")]
     [Alias("Jeff","JeffError")]
     [Switch]
