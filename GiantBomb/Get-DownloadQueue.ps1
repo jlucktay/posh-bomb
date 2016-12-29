@@ -49,7 +49,11 @@ function Get-DownloadQueue {
         $VideoPath = "$BaseDestination$CleanVideoType\$CleanName.mp4"
 
         if (Test-Path -LiteralPath $VideoPath) {
-            Write-Host "'$VideoPath' already exists, moving on!" -ForegroundColor DarkGreen
+            if ((Get-Item -LiteralPath $VideoPath).Length -eq 0) {
+                Write-Host "'$VideoPath' dummy file already exists, moving on!" -ForegroundColor DarkGreen
+            } else {
+                Write-Host "'$VideoPath' video file already exists, moving on!" -ForegroundColor Green
+            }
         } else {
             if (Confirm-DownloadChoice "$(Remove-InvalidFileNameChars $Response.name)") {
                 $DownloadQueue += @{
