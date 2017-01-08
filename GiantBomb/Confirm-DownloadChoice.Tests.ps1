@@ -21,4 +21,10 @@ Describe "Confirm-DownloadChoice" {
         Confirm-DownloadChoice -VideoName "random name" |
             Should Be $false
     }
+
+    It "returns true when AlwaysConfirm is set" {
+        $AlwaysConfirm = $true
+        Confirm-DownloadChoice -VideoName "random name" |
+            Should Be $true
+    }
 }
