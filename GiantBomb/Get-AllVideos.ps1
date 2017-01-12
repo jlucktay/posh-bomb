@@ -31,6 +31,10 @@ function Get-AllVideos {
         foreach ($v in $($PageResponse.results)) {
             $ReturnList.Add($v.site_detail_url)
         }
+
+        if ($SkipIndex -gt 0 -and $ResultCount -ge 200) {
+            break
+        }
     }
 
     $Return = $ReturnList.ToArray()
