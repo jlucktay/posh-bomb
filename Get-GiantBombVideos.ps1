@@ -72,6 +72,7 @@ $JeffErrorSize = (Get-Item -LiteralPath $JeffErrorPath).Length
 # Empty arrays to fill up later
 $ConvertedVideos = @()
 $DownloadQueue = @()
+$SortedVideos = @()
 
 #------------------------------------------------------------------------------
 # Import functions
@@ -130,7 +131,7 @@ foreach ($c in $VideoCategory) {
 }
 
 $ConvertedList.Sort()
-$ConvertedVideos = $ConvertedList.ToArray() | Get-Unique
+$ConvertedVideos += $ConvertedList.ToArray() | Get-Unique
 
 #------------------------------------------------------------------------------
 # Bail out if nothing is queued up
@@ -141,14 +142,14 @@ if (($null -eq $ConvertedVideos) -or ($ConvertedVideos.Length -eq 0)) {
 }
 
 # Sort the videos by their unique IDs in the tail end of the URL
-$ConvertedVideos = $ConvertedVideos | Sort-Object { [long]($_.Substring($_.IndexOf("-") + 1, $_.Substring($_.IndexOf("-") + 1).Length - 1)) }
+$SortedVideos += $ConvertedVideos | Sort-Object { [long]($_.Substring($_.IndexOf("-") + 1, $_.Substring($_.IndexOf("-") + 1).Length - 1)) }
 $TotalSize = 0
 
-Write-Host "$($ConvertedVideos.Count) video(s) queued.`n"
+Write-Host "$($SortedVideos.Count) video(s) queued.`n"
 
 # Go through the queue and prompt for download confirmation
 $JeffErrorLimitHit = $false
-$DownloadQueue += Get-DownloadQueue $ConvertedVideos ([ref]$JeffErrorLimitHit)
+$DownloadQueue += Get-DownloadQueue $SortedVideos ([ref]$JeffErrorLimitHit)
 $DownloadsCompleted = 0
 
 if ($DownloadQueue.Count -gt 0) {
@@ -205,8 +206,8 @@ if ($DownloadQueue.Count -gt 0) {
 
 # If zero downloads are completed from those looked up, exit with a non-zero code at the end
 if ($DownloadsCompleted -eq 0) {
-    Write-Host "Zero downloads from $($ConvertedVideos.Count) video(s) found.`n" -ForegroundColor Red
-    exit $ConvertedVideos.Count
+    Write-Host "Zero downloads from $($SortedVideos.Count) video(s) found.`n" -ForegroundColor Red
+    exit $SortedVideos.Count
 } else {
     Write-Host "Downloads completed: $DownloadsCompleted`n"
 }

@@ -44,7 +44,20 @@ function Search-Api {
 
     $Return = $Return | Get-Unique
 
-    Write-Host " Filtered to $(if ($Return) { $Return.Count } else { "0" }) matching unique result(s)."
+    # If there is only 1 search result then it is a string which does not have .Count
+    $ReturnString = ""
+
+    if ($Return) {
+        if ($Return.PSObject.Properties.Name -contains "Count") {
+            $ReturnString = $Return.Count
+        } else {
+            $ReturnString = "1"
+        }
+    } else {
+        $ReturnString = "0"
+    }
+
+    Write-Host " Filtered to $ReturnString matching unique result(s)."
 
     return $Return
 }
