@@ -10,9 +10,11 @@ Describe "Get-VideosFromFeed" {
             }
         }
 
-        It "Calls IWR" {
-            Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
+        It "Calls IWR and gets 3 items back" {
+            $Result = Get-VideosFromFeed "http://www.giantbomb.com/feeds/video/"
+
             Assert-MockCalled Invoke-WebRequest -Exactly 1
+            $Result.Count | Should Be 3
         }
     }
 }
