@@ -22,8 +22,7 @@ function Get-DownloadQueue {
     $Counter = 1
 
     foreach ($Video in $ConvertedVideos) {
-        $GetDetailsUrl = "$($Video)?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type"
-
+        $GetDetailsUrl = "$($Video)?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type,publish_date"
         $Response = (Invoke-WebRequest -Method Get -Uri $GetDetailsUrl).Content | ConvertFrom-Json
         Start-Sleep -Milliseconds 1000
 
@@ -81,7 +80,7 @@ function Get-DownloadQueue {
             [DateTime]$VideoLastModified = [DateTime]::Parse($HeadResponse.Headers['Last-Modified'])
 
             if ($VideoLastModified -ne $JeffErrorDateModified) {
-                Write-Host "Fixing dummy timestamp to '$("{0:s}" -f $VideoLastModified)'..." -ForegroundColor Yellow
+                Write-Host "Fixing modified timestamp to '$("{0:s}" -f $VideoLastModified)'..." -ForegroundColor Yellow
                 (Get-Item -LiteralPath "$VideoPath").LastWriteTime = $VideoLastModified
             } else {
                 if ($JeffErrorQuit) {
@@ -96,7 +95,7 @@ function Get-DownloadQueue {
         -and (Test-Path -LiteralPath $VideoPath -PathType Leaf) `
         -and ((Get-Item -LiteralPath $VideoPath).Length -eq 0) `
         -and ((Get-Item -LiteralPath $VideoPath).CreationTime -eq (Get-Item -LiteralPath $VideoPath).LastWriteTime)) {
-            Write-Host "Jeff Error limit was hit; skipping timestamp fix for dummy of '$($Response.name)'." -ForegroundColor Yellow
+            Write-Host "Jeff Error limit was hit; skipping fix of modified timestamp for '$($Response.name)' dummy file." -ForegroundColor Yellow
         }
 
         Write-Host
