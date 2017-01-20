@@ -13,16 +13,10 @@ function Get-DownloadQueue {
     )
 
     $DownloadQueue = @()
-
-    # reading these globals:
-    #   $ApiKey
-    #   $BaseDestination
-    #   $JeffErrorDateModified
-
     $Counter = 1
 
     foreach ($Video in $ConvertedVideos) {
-        $GetDetailsUrl = "$($Video)?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type,publish_date"
+        $GetDetailsUrl = "$($Video)?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type,publish_date,url"
         $Response = (Invoke-WebRequest -Method Get -Uri $GetDetailsUrl).Content | ConvertFrom-Json
         Start-Sleep -Milliseconds 1000
 
@@ -45,7 +39,19 @@ function Get-DownloadQueue {
         $CleanVideoType = Remove-InvalidFileNameChars $Response.video_type
         $CleanName = Remove-InvalidFileNameChars $Response.name
 
-        $VideoPath = "$BaseDestination$CleanVideoType\$CleanName.mp4"
+        # Not every stream gets archived on the site
+        if ($Response.url) {
+            $CleanUrl = Remove-InvalidFileNameChars $Response.url
+        } else {
+            $CleanUrl = ".$VideoFileExtension"
+        }
+
+        $VideoPathOld = "$BaseDestination$CleanVideoType\$CleanName.$VideoFileExtension"
+        $VideoPath = "$BaseDestination$CleanVideoType\$CleanName.$CleanUrl"
+
+        if ((Test-Path -LiteralPath $VideoPathOld) -and !(Test-Path -LiteralPath $VideoPath)) {
+            Rename-Item -LiteralPath $VideoPathOld -NewName $VideoPath -Verbose
+        }
 
         if (Test-Path -LiteralPath $VideoPath) {
             if ((Get-Item -LiteralPath $VideoPath).Length -eq 0) {
@@ -59,6 +65,7 @@ function Get-DownloadQueue {
                     Url = "$($Response.hd_url)"
                     Type = "$($Response.video_type)"
                     Name = "$(Remove-InvalidFileNameChars $Response.name)"
+                    File = "$($Response.url)"
                 }
                 Write-Host "Queued '$($Response.video_type) > $($Response.name)' for download!" -ForegroundColor Green
             } else {
@@ -67,35 +74,26 @@ function Get-DownloadQueue {
             }
         }
 
-        if (!($JeffErrorLimitHit.Value) `
-        -and (Test-Path -LiteralPath $VideoPath -PathType Leaf) `
-        -and ((Get-Item -LiteralPath $VideoPath).Length -eq 0) `
-        -and (`
-            ((Get-Item -LiteralPath $VideoPath).LastWriteTime -eq $JeffErrorDateModified) `
-            -or (((Get-Item -LiteralPath $VideoPath).CreationTime) -eq (Get-Item -LiteralPath $VideoPath).LastWriteTime))
-        ) {
-            $HeadResponse = Invoke-WebRequest -Method Head -Uri "$($Response.hd_url)?api_key=$ApiKey"
-            Start-Sleep -Milliseconds 1000
+        if ($null -eq $Response.hd_url) {
+            Write-Host "API response for '$Video' did not include a URL.`n" -ForegroundColor Red
+            continue
+        }
 
-            [DateTime]$VideoLastModified = [DateTime]::Parse($HeadResponse.Headers['Last-Modified'])
+        if ($null -eq $Response.publish_date) {
+            Write-Host "API response for '$Video' did not include a publish date.`n" -ForegroundColor Red
+        } else {
+            [DateTime]$VideoPublished = [DateTime]::Parse($Response.publish_date)
 
-            if ($VideoLastModified -ne $JeffErrorDateModified) {
-                Write-Host "Fixing modified timestamp to '$("{0:s}" -f $VideoLastModified)'..." -ForegroundColor Yellow
-                (Get-Item -LiteralPath "$VideoPath").LastWriteTime = $VideoLastModified
-            } else {
-                if ($JeffErrorQuit) {
-                    Write-Host "Jeff Error limit has been hit; quitting." -ForegroundColor Red
-                    exit 1
-                }
-
-                Write-Host "Jeff Error limit has been hit." -ForegroundColor Red
-                $JeffErrorLimitHit.Value = $true
+            if ((Test-Path -LiteralPath $VideoPath -PathType Leaf) `
+            -and ((Get-Item -LiteralPath $VideoPath).Length -eq 0) `
+            -and ( `
+                ((Get-Item -LiteralPath $VideoPath).CreationTime -ne $VideoPublished) `
+                -or ((Get-Item -LiteralPath $VideoPath).LastWriteTime -ne $VideoPublished) `
+            )) {
+                Write-Host "Setting timestamps on dummy file to publish date '$("{0:s}" -f $VideoPublished)'..." -ForegroundColor Cyan
+                (Get-Item -LiteralPath "$VideoPath").CreationTime = $VideoPublished
+                (Get-Item -LiteralPath "$VideoPath").LastWriteTime = $VideoPublished
             }
-        } elseif ($JeffErrorLimitHit.Value `
-        -and (Test-Path -LiteralPath $VideoPath -PathType Leaf) `
-        -and ((Get-Item -LiteralPath $VideoPath).Length -eq 0) `
-        -and ((Get-Item -LiteralPath $VideoPath).CreationTime -eq (Get-Item -LiteralPath $VideoPath).LastWriteTime)) {
-            Write-Host "Jeff Error limit was hit; skipping fix of modified timestamp for '$($Response.name)' dummy file." -ForegroundColor Yellow
         }
 
         Write-Host

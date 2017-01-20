@@ -1,5 +1,6 @@
 # Finds dummy (zero size) files with timestamps that match the Jeff Error, hence haven't been updated with their own correct timestamp
 
+$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"

@@ -1,3 +1,4 @@
+$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 function Save-Video {
@@ -12,6 +13,9 @@ function Save-Video {
         [string]$Name,
 
         [Parameter(Mandatory=$true)]
+        [string]$File,
+
+        [Parameter(Mandatory=$true)]
         [long]$ContentLength,
 
         [Parameter(Mandatory=$true)]
@@ -24,7 +28,7 @@ function Save-Video {
         New-Item -ItemType Directory -Force -Path $DestinationDirectory | Out-Null
     }
 
-    $Output = "$($DestinationDirectory)$(Remove-InvalidFileNameChars $Name).mp4"
+    $Output = "$($DestinationDirectory)$(Remove-InvalidFileNameChars $Name).$File"
 
     if (Test-Path -LiteralPath $Output) {
         if ((Get-Item -LiteralPath $Output).Length -eq $JeffErrorSize) {

@@ -40,12 +40,7 @@ param(
 
     [Parameter(HelpMessage="Always say yes to the confirmation prompts and download everything.")]
     [Switch]
-    $AlwaysConfirm,
-
-    [Parameter(HelpMessage="Stop running if/when we run into the Jeff Error.")]
-    [Alias("Jeff","JeffError")]
-    [Switch]
-    $JeffErrorQuit
+    $AlwaysConfirm
 )
 
 $ErrorActionPreference = "Stop"
@@ -68,6 +63,7 @@ $BaseDestination = "$($env:HOME)\Videos\Giant Bomb\"
 $JeffErrorPath = "$BaseDestination\Jeff Error.mp4"
 $JeffErrorSize = (Get-Item -LiteralPath $JeffErrorPath).Length
 [DateTime]$JeffErrorDateModified = (Get-Item -LiteralPath $JeffErrorPath).LastWriteTime
+$VideoFileExtension = "mp4"
 
 # Empty arrays to fill up later
 $ConvertedVideos = @()
