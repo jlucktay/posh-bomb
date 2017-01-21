@@ -46,12 +46,7 @@ function Get-DownloadQueue {
             $CleanUrl = ".$VideoFileExtension"
         }
 
-        $VideoPathOld = "$BaseDestination$CleanVideoType\$CleanName.$VideoFileExtension"
         $VideoPath = "$BaseDestination$CleanVideoType\$CleanName.$CleanUrl"
-
-        if ((Test-Path -LiteralPath $VideoPathOld) -and !(Test-Path -LiteralPath $VideoPath)) {
-            Rename-Item -LiteralPath $VideoPathOld -NewName $VideoPath -Verbose
-        }
 
         if (Test-Path -LiteralPath $VideoPath) {
             if ((Get-Item -LiteralPath $VideoPath).Length -eq 0) {
