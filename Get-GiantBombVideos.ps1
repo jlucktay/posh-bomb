@@ -187,7 +187,7 @@ if ($DownloadQueue.Count -gt 0) {
 
         Write-Host "$($Download.Type) > $($Download.Name)"
         Write-Host "`tLast-Modified:`t$("{0:s}" -f $VideoLastModified)"
-        Write-Host ("`t{0:N0}`t{1}" -f $VideoSize, $Download.Url)
+        Write-Host ("`t{0:N0}`t{1}" -f $VideoSize, $($Download.Url).Replace("?api_key=$ApiKey",""))
 
         $SaveVideoResult = Save-Video @Download -ContentLength $VideoSize -LastModified $VideoLastModified
 
