@@ -4,7 +4,7 @@ Set-StrictMode -Version Latest
 function Convert-UrlForApi {
     param(
         [Parameter(Mandatory=$true)]
-        [ValidatePattern('^http:\/\/www.giantbomb.com\/(videos\/)?[a-z0-9\-]+\/[0-9]+-')]
+        [ValidatePattern('^https?:\/\/www.giantbomb.com\/(videos\/)?[a-z0-9\-]+\/[0-9]+-')]
         [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
         [string]$Url
     )
