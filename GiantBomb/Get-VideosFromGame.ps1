@@ -6,7 +6,7 @@ function Get-VideosFromGame {
         [string]$GameUrl
     )
 
-    if ($GameUrl -notmatch '^http:\/\/www\.giantbomb\.com\/([a-z0-9-]+)\/3030-([0-9]+)\/$') {
+    if ($GameUrl -notmatch '^https?:\/\/www\.giantbomb\.com\/([a-z0-9-]+)\/3030-([0-9]+)\/$') {
         return $false
     } <# else {
         Write-Host "Game ID # '$($Matches[2])' ('$($Matches[1])') found."

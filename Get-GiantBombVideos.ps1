@@ -1,7 +1,7 @@
 param(
     [Parameter(HelpMessage="One or more video page URLs.")]
     [Alias("Url","Video","VideoUrl")]
-    [ValidatePattern('^http:\/\/www.giantbomb.com\/videos\/[a-z0-9\-]+\/2300-[0-9]+\/$')]
+    [ValidatePattern('^https?:\/\/www.giantbomb.com\/videos\/[a-z0-9\-]+\/2300-[0-9]+\/$')]
     [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
     [string[]]$VideoPageUrl,
 
@@ -17,7 +17,7 @@ param(
 
     [Parameter(HelpMessage="One or more game page URLs.")]
     [Alias("Game","GameUrl")]
-    [ValidatePattern('^http:\/\/www.giantbomb.com\/[a-z0-9\-]+\/3030-[0-9]+\/$')]
+    [ValidatePattern('^https?:\/\/www.giantbomb.com\/[a-z0-9\-]+\/3030-[0-9]+\/$')]
     [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
     [string[]]$GamePageUrl,
 
