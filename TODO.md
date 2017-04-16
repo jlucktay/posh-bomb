@@ -12,4 +12,3 @@
 - Put a wrapper around Invoke-WebRequest to combine the 1 second sleep into one call, rather than having to remember to add the sleep line every time
 - Write some more Pester tests to cover this whole mess
 - Double check the sort order of the converted videos list
-- Set the created date of files to the publish date of the video
