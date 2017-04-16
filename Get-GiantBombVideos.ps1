@@ -5,7 +5,7 @@ param(
     [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
     [string[]]$VideoPageUrl,
 
-    [Parameter(HelpMessage="Set this switch to add videos from the RSS feed.")]
+    [Parameter(HelpMessage="Specify this to add videos from the RSS feed.")]
     [Alias("AddFromFeed","Feed","VideoFeed")]
     [Switch]
     $AddVideosFromFeed,
