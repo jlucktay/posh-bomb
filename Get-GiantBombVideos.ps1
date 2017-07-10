@@ -1,46 +1,42 @@
 param(
-    [Parameter(HelpMessage="One or more video page URLs.")]
-    [Alias("Url","Video","VideoUrl")]
+    [Parameter(HelpMessage = "One or more video page URLs.")]
+    [Alias("Url", "Video", "VideoUrl")]
     [ValidatePattern('^https?:\/\/www.giantbomb.com\/videos\/[a-z0-9\-]+\/2300-[0-9]+\/$')]
-    [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
-    [string[]]$VideoPageUrl,
+    [ValidateScript({ [Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute) })]
+    [string[]] $VideoPageUrl,
 
-    [Parameter(HelpMessage="Specify this to add videos from the RSS feed.")]
-    [Alias("AddFromFeed","Feed","VideoFeed")]
-    [Switch]
-    $AddVideosFromFeed,
+    [Parameter(HelpMessage = "Specify this to add videos from the RSS feed.")]
+    [Alias("AddFromFeed", "Feed", "VideoFeed")]
+    [Switch] $AddVideosFromFeed,
 
-    [Parameter(HelpMessage="One or more strings to search for.")]
+    [Parameter(HelpMessage = "One or more strings to search for.")]
     [Alias("SearchString")]
     [ValidatePattern('^[a-z0-9 ]+$')]
-    [string[]]$Search,
+    [string[]] $Search,
 
-    [Parameter(HelpMessage="One or more game page URLs.")]
-    [Alias("Game","GameUrl")]
+    [Parameter(HelpMessage = "One or more game page URLs.")]
+    [Alias("Game", "GameUrl")]
     [ValidatePattern('^https?:\/\/www.giantbomb.com\/[a-z0-9\-]+\/3030-[0-9]+\/$')]
-    [ValidateScript({[Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute)})]
-    [string[]]$GamePageUrl,
+    [ValidateScript({ [Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute) })]
+    [string[]] $GamePageUrl,
 
-    [Parameter(HelpMessage="One or more video category numbers.")]
+    [Parameter(HelpMessage = "One or more video category numbers.")]
     [Alias("Category")]
-    [int[]]$VideoCategory,
+    [int[]] $VideoCategory,
 
-    [Parameter(HelpMessage="Get all of the videos. ALL OF THEM.")]
-    [Alias("All","Everything")]
-    [Switch]
-    $AllVideos,
+    [Parameter(HelpMessage = "Get all of the videos. ALL OF THEM.")]
+    [Alias("All", "Everything")]
+    [Switch] $AllVideos,
 
-    [Parameter(HelpMessage="Skip ahead by this many videos when -AllVideos is true.")]
+    [Parameter(HelpMessage = "Skip ahead by this many videos when -AllVideos is true or searching with categories.")]
     [Alias("SkipToVideo")]
-    [long]$SkipIndex = 0,
+    [long] $SkipIndex = 0,
 
-    [Parameter(HelpMessage="Skip the confirmation prompts and don't download anything.")]
-    [Switch]
-    $SkipConfirm,
+    [Parameter(HelpMessage = "Skip the confirmation prompts and don't download anything.")]
+    [Switch] $SkipConfirm,
 
-    [Parameter(HelpMessage="Always say yes to the confirmation prompts and download everything.")]
-    [Switch]
-    $AlwaysConfirm
+    [Parameter(HelpMessage = "Always say yes to the confirmation prompts and download everything.")]
+    [Switch] $AlwaysConfirm
 )
 
 $ErrorActionPreference = "Stop"
@@ -55,7 +51,8 @@ $ApiKeyFile = "$PSScriptRoot\GiantBombApiKey.json"
 
 if (Test-Path -LiteralPath $ApiKeyFile) {
     $ApiKey = (Get-Content -LiteralPath $ApiKeyFile | ConvertFrom-Json).apikey
-} else {
+}
+else {
     throw "The API key file was not found at '$ApiKeyFile'."
 }
 
@@ -187,7 +184,7 @@ if ($DownloadQueue.Count -gt 0) {
 
         Write-Host "$($Download.Type) > $($Download.Name)"
         Write-Host "`tLast-Modified:`t$("{0:s}" -f $VideoLastModified)"
-        Write-Host ("`t{0:N0}`t{1}" -f $VideoSize, $($Download.Url).Replace("?api_key=$ApiKey",""))
+        Write-Host ("`t{0:N0}`t{1}" -f $VideoSize, $($Download.Url).Replace("?api_key=$ApiKey", ""))
 
         $SaveVideoResult = Save-Video @Download -ContentLength $VideoSize -LastModified $VideoLastModified
 
@@ -204,6 +201,7 @@ if ($DownloadQueue.Count -gt 0) {
 if ($DownloadsCompleted -eq 0) {
     Write-Host "Zero downloads from $($SortedVideos.Count) video(s) found.`n" -ForegroundColor Red
     exit $SortedVideos.Count
-} else {
+}
+else {
     Write-Host "Downloads completed: $DownloadsCompleted`n"
 }
