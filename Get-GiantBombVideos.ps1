@@ -118,7 +118,7 @@ foreach ($g in $GamePageUrl) {
 }
 
 foreach ($c in $VideoCategory) {
-    foreach ($v in (Get-VideosFromCategory $c)) {
+    foreach ($v in (Get-VideosFromCategory -VideoCategory $c -SkipIndex $SkipIndex)) {
         $ConvertedList.Add((Convert-UrlForApi $v))
     }
 }

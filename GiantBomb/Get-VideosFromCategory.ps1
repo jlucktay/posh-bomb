@@ -3,11 +3,14 @@ Set-StrictMode -Version Latest
 
 function Get-VideosFromCategory {
     param(
-        [Parameter(Mandatory=$true)]
-        [int]$VideoCategory
+        [Parameter(Mandatory = $true)]
+        [long] $VideoCategory,
+
+        [Parameter(Mandatory = $true)]
+        [long] $SkipIndex
     )
 
-    Write-Host "Getting videos from category #$VideoCategory... " -NoNewline
+    Write-Host "Getting videos from category #$VideoCategory$(if ($SkipIndex) { " (and skipping $SkipIndex)" })... " -NoNewline
 
     $BaseVideoCategoryUrl = "http://www.giantbomb.com/api/videos/?api_key=$ApiKey&format=json&sort=publish_date:asc&filter=video_type:$VideoCategory&field_list=site_detail_url,name"
 
@@ -19,10 +22,10 @@ function Get-VideosFromCategory {
     $ResultCount = 0
     $ReturnList = New-Object System.Collections.Generic.List[System.String]
 
-    while ($ResultCount -lt $($CategoryResponse.number_of_total_results)) {
-        Write-Host "$ResultCount " -NoNewline
+    while (($ResultCount + $SkipIndex) -lt $($CategoryResponse.number_of_total_results)) {
+        Write-Host "$($ResultCount + $SkipIndex) " -NoNewline
 
-        $PageResponse = ((Invoke-WebRequest -Uri "$BaseVideoCategoryUrl&offset=$ResultCount").Content | ConvertFrom-Json)
+        $PageResponse = ((Invoke-WebRequest -Uri "$BaseVideoCategoryUrl&offset=$($ResultCount + $SkipIndex)").Content | ConvertFrom-Json)
         Start-Sleep -Milliseconds 1000
 
         $ResultCount += $PageResponse.number_of_page_results
