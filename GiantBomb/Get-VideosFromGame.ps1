@@ -2,7 +2,7 @@ Set-StrictMode -Version Latest
 
 function Get-VideosFromGame {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$GameUrl
     )
 

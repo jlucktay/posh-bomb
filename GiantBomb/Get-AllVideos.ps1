@@ -4,8 +4,8 @@ Set-StrictMode -Version Latest
 function Get-AllVideos {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory=$true)]
-        [long]$SkipIndex
+        [Parameter(Mandatory = $true)]
+        [long] $SkipIndex
     )
 
     Write-Host "Getting all videos$(if ($SkipIndex) { " (and skipping $SkipIndex)" })... " -NoNewline
