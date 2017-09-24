@@ -17,8 +17,23 @@ function Get-DownloadQueue {
 
     foreach ($Video in $ConvertedVideos) {
         $GetDetailsUrl = "$($Video)?api_key=$ApiKey&format=json&field_list=hd_url,name,video_type,publish_date,url"
-        $Response = (Invoke-WebRequest -Method Get -Uri $GetDetailsUrl).Content | ConvertFrom-Json
-        Start-Sleep -Milliseconds 1000
+        $Response = $null
+        $FailCount = 0
+
+        while ($Response -eq $null) {
+            try {
+                $RequestReturn = Invoke-WebRequest -Method Get -Uri $GetDetailsUrl -TimeoutSec 10
+                $Response = $RequestReturn.Content | ConvertFrom-Json
+            }
+            catch {
+                $FailCount++
+                Write-Host -ForegroundColor Red -Object "Failed to get '$Video' $FailCount time(s), retrying in 5 seconds..."
+                Start-Sleep -Seconds 4
+            }
+            finally {
+                Start-Sleep -Seconds 1
+            }
+        }
 
         Write-Host "[$Counter/$($ConvertedVideos.Count)] " -NoNewline
         $Counter += 1
