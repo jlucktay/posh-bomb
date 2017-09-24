@@ -24,6 +24,10 @@ param(
     [Alias("Category")]
     [System.UInt64[]] $VideoCategory,
 
+    [Parameter(HelpMessage = "One or more video show numbers.")]
+    [Alias("Show")]
+    [System.UInt64[]] $VideoShow,
+
     [Parameter(HelpMessage = "Get all of the videos. ALL OF THEM.")]
     [Alias("All", "Everything")]
     [Switch] $AllVideos,
@@ -77,6 +81,7 @@ $SortedVideos = @()
 . "$PSScriptRoot\GiantBomb\Get-VideosFromCategory.ps1"
 . "$PSScriptRoot\GiantBomb\Get-VideosFromFeed.ps1"
 . "$PSScriptRoot\GiantBomb\Get-VideosFromGame.ps1"
+. "$PSScriptRoot\GiantBomb\Get-VideosFromShow.ps1"
 . "$PSScriptRoot\GiantBomb\Remove-InvalidFileNameChars.ps1"
 . "$PSScriptRoot\GiantBomb\Save-Video.ps1"
 . "$PSScriptRoot\GiantBomb\Search-Api.ps1"
@@ -119,6 +124,12 @@ foreach ($g in $GamePageUrl) {
 
 foreach ($c in $VideoCategory) {
     foreach ($v in (Get-VideosFromCategory -VideoCategory $c -SkipIndex $SkipIndex)) {
+        $ConvertedList.Add((Convert-UrlForApi $v))
+    }
+}
+
+foreach ($s in $VideoShow) {
+    foreach ($v in (Get-VideosFromShow -VideoShow $s -SkipIndex $SkipIndex)) {
         $ConvertedList.Add((Convert-UrlForApi $v))
     }
 }
