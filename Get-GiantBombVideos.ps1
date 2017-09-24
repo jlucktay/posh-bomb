@@ -39,6 +39,9 @@ param(
     [Parameter(HelpMessage = "Skip the confirmation prompts and don't download anything.")]
     [Switch] $SkipConfirm,
 
+    [Parameter(HelpMessage = "Quit immediately the first time we see the Jeff Error.")]
+    [Switch] $JeffErrorQuit,
+
     [Parameter(HelpMessage = "Always say yes to the confirmation prompts and download everything.")]
     [Switch] $AlwaysConfirm
 )
