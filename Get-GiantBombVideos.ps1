@@ -3,7 +3,7 @@ param(
     [Alias("Url", "Video", "VideoUrl")]
     [ValidatePattern('^https?:\/\/www.giantbomb.com\/videos\/[a-z0-9\-]+\/2300-[0-9]+\/$')]
     [ValidateScript({ [Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute) })]
-    [string[]] $VideoPageUrl,
+    [System.String[]] $VideoPageUrl,
 
     [Parameter(HelpMessage = "Specify this to add videos from the RSS feed.")]
     [Alias("AddFromFeed", "Feed", "VideoFeed")]
@@ -12,17 +12,17 @@ param(
     [Parameter(HelpMessage = "One or more strings to search for.")]
     [Alias("SearchString")]
     [ValidatePattern('^[a-z0-9 ]+$')]
-    [string[]] $Search,
+    [System.String[]] $Search,
 
     [Parameter(HelpMessage = "One or more game page URLs.")]
     [Alias("Game", "GameUrl")]
     [ValidatePattern('^https?:\/\/www.giantbomb.com\/[a-z0-9\-]+\/3030-[0-9]+\/$')]
     [ValidateScript({ [Uri]::IsWellFormedUriString($($_), [UriKind]::Absolute) })]
-    [string[]] $GamePageUrl,
+    [System.String[]] $GamePageUrl,
 
     [Parameter(HelpMessage = "One or more video category numbers.")]
     [Alias("Category")]
-    [int[]] $VideoCategory,
+    [System.UInt64[]] $VideoCategory,
 
     [Parameter(HelpMessage = "Get all of the videos. ALL OF THEM.")]
     [Alias("All", "Everything")]
@@ -30,7 +30,7 @@ param(
 
     [Parameter(HelpMessage = "Skip ahead by this many videos when -AllVideos is true or searching with categories.")]
     [Alias("SkipToVideo")]
-    [long] $SkipIndex = 0,
+    [System.UInt64] $SkipIndex = 0,
 
     [Parameter(HelpMessage = "Skip the confirmation prompts and don't download anything.")]
     [Switch] $SkipConfirm,
